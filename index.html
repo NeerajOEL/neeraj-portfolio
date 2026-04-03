@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Neeraj Singh Guleria — Azure Data Engineer</title>
+<meta name="description" content="Azure Data Engineer · PySpark · dbt · Databricks · Snowflake · Building pipelines that actually work in production."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600;700;800&family=JetBrains+Mono:wght@300;400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: {
+        display: ['Oxanium','monospace'],
+        mono:    ['JetBrains Mono','monospace'],
+        body:    ['DM Sans','sans-serif'],
+      },
+    }
+  }
+}
+</script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;cursor:none!important;}
+html{scroll-behavior:smooth;}
+body{background:#060912;color:#E2E8F0;font-family:'DM Sans',sans-serif;overflow-x:hidden;}
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-track{background:#060912;}
+::-webkit-scrollbar-thumb{background:#0078D4;border-radius:2px;}
+
+/* Cursor */
+#cursor-dot{position:fixed;width:8px;height:8px;background:#00D4FF;border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:screen;}
+#cursor-ring{position:fixed;width:32px;height:32px;border:1px solid rgba(0,212,255,0.45);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .2s,height .2s;}
+
+/* Scrollbar */
+.flow-line{stroke-dasharray:8 5;animation:flow 3s linear infinite;}
+.flow-slow{stroke-dasharray:8 5;animation:flow 5s linear infinite;}
+.flow-amber{stroke-dasharray:8 5;animation:flow 4s linear infinite;}
+
+/* Glass */
+.glass{background:rgba(12,17,32,0.88);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);}
+
+/* Gradients */
+.text-grad-azure{background:linear-gradient(135deg,#50B4FC,#0078D4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.text-grad-neon{background:linear-gradient(135deg,#00D4FF,#0078D4,#50B4FC);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.text-grad-amber{background:linear-gradient(135deg,#FCD34D,#F59E0B);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
+/* Grid bg */
+.bg-grid{background-image:linear-gradient(rgba(0,120,212,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,120,212,0.04) 1px,transparent 1px);background-size:40px 40px;}
+
+/* Reveal */
+.reveal{opacity:0;transform:translateY(32px);transition:opacity .7s ease,transform .7s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* Tool badge */
+.tool-badge:hover{transform:translateY(-2px) scale(1.04);transition:all .18s ease;}
+
+/* Animations */
+@keyframes flow{to{stroke-dashoffset:-200;}}
+@keyframes pulseGlow{0%,100%{opacity:.5;transform:scale(1);}50%{opacity:1;transform:scale(1.4);}}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
+@keyframes slideUp{from{opacity:0;transform:translateY(28px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes ticker{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+@keyframes nodePulse{0%,100%{opacity:.6;}50%{opacity:1;}}
+@keyframes scanLine{0%{top:-5%;}100%{top:105%;}}
+@keyframes dataFlow{0%{transform:translateX(-8px);opacity:0;}50%{opacity:1;}100%{transform:translateX(8px);opacity:0;}}
+@keyframes borderPulse{0%,100%{box-shadow:0 0 0 0 rgba(0,120,212,0);} 50%{box-shadow:0 0 0 4px rgba(0,120,212,0.15);}}
+
+.anim-slide-1{animation:slideUp .7s .05s ease both;}
+.anim-slide-2{animation:slideUp .7s .15s ease both;}
+.anim-slide-3{animation:slideUp .7s .25s ease both;}
+.anim-slide-4{animation:slideUp .7s .35s ease both;}
+.anim-slide-5{animation:slideUp .7s .45s ease both;}
+.anim-fade{animation:fadeIn .8s .1s ease both;}
+.anim-ticker{animation:ticker 26s linear infinite;}
+.anim-float{animation:float 6s ease-in-out infinite;}
+.anim-float2{animation:float 7s 1.5s ease-in-out infinite;}
+.anim-pulse{animation:pulseGlow 2s ease-in-out infinite;}
+
+/* Nav link underline */
+.nav-link::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1px;background:#0078D4;transition:width .3s;}
+.nav-link:hover::after,.nav-link.active::after{width:100%;}
+
+/* Timeline */
+.timeline-line{position:absolute;left:6px;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,#0078D4,rgba(0,120,212,0.15),transparent);}
+
+/* Card hover */
+.proj-card{transition:transform .3s,box-shadow .3s,border-color .3s;}
+.proj-card:hover{transform:translateY(-5px);box-shadow:0 12px 40px rgba(0,120,212,0.18);}
+
+/* Skill pill hover */
+.skill-pill{transition:all .2s;}
+.skill-pill:hover{transform:translateY(-2px);}
+</style>
+</head>
+<body>
+
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback } = React;
+
+// ── DATA ─────────────────────────────────────────────────────────────────────
+
+const TOOLS = {
+  'Azure Data Factory':  {bg:'rgba(0,120,212,0.15)',  border:'rgba(0,120,212,0.45)',   text:'#50B4FC', icon:'🔷'},
+  'Azure Databricks':    {bg:'rgba(255,54,33,0.12)',   border:'rgba(255,54,33,0.4)',    text:'#FF7A65', icon:'🔶'},
+  'Azure Synapse':       {bg:'rgba(0,120,212,0.12)',   border:'rgba(0,120,212,0.35)',   text:'#50B4FC', icon:'🔷'},
+  'ADLS Gen2':           {bg:'rgba(0,120,212,0.1)',    border:'rgba(0,120,212,0.3)',    text:'#7DC8FF', icon:'🗄️'},
+  'PySpark':             {bg:'rgba(226,90,28,0.12)',   border:'rgba(226,90,28,0.38)',   text:'#F0845C', icon:'⚡'},
+  'Apache Spark':        {bg:'rgba(226,90,28,0.12)',   border:'rgba(226,90,28,0.38)',   text:'#F0845C', icon:'⚡'},
+  'dbt':                 {bg:'rgba(255,105,74,0.12)',  border:'rgba(255,105,74,0.38)',  text:'#FF9B86', icon:'🔄'},
+  'Delta Lake':          {bg:'rgba(0,173,216,0.12)',   border:'rgba(0,173,216,0.38)',   text:'#4DC8E8', icon:'△'},
+  'Snowflake':           {bg:'rgba(41,181,232,0.12)',  border:'rgba(41,181,232,0.38)',  text:'#7DD4F5', icon:'❄️'},
+  'Apache Kafka':        {bg:'rgba(130,130,130,0.1)',  border:'rgba(130,130,130,0.3)',  text:'#AAAAAA', icon:'📨'},
+  'Python':              {bg:'rgba(55,118,171,0.15)',  border:'rgba(55,118,171,0.38)',  text:'#FFD43B', icon:'🐍'},
+  'SQL':                 {bg:'rgba(204,41,39,0.12)',   border:'rgba(204,41,39,0.38)',   text:'#FF7A78', icon:'🗃️'},
+  'Terraform':           {bg:'rgba(123,66,188,0.14)',  border:'rgba(123,66,188,0.4)',   text:'#A07CC5', icon:'🔧'},
+  'Power BI':            {bg:'rgba(242,200,17,0.1)',   border:'rgba(242,200,17,0.35)',  text:'#F7DC61', icon:'📊'},
+  'Docker':              {bg:'rgba(36,150,237,0.12)',  border:'rgba(36,150,237,0.38)',  text:'#6BB8F5', icon:'🐳'},
+  'GitHub Actions':      {bg:'rgba(60,70,80,0.2)',     border:'rgba(110,120,130,0.3)', text:'#CCCCCC', icon:'⚙️'},
+  'Apache Iceberg':      {bg:'rgba(100,160,220,0.12)', border:'rgba(100,160,220,0.32)' ,text:'#90C8F0', icon:'🧊'},
+  'Great Expectations':  {bg:'rgba(16,185,129,0.12)',  border:'rgba(16,185,129,0.38)',  text:'#6EE7B7', icon:'✅'},
+  'Apache Airflow':      {bg:'rgba(0,168,164,0.12)',   border:'rgba(0,168,164,0.38)',   text:'#4DD5D1', icon:'🌪️'},
+  'Unity Catalog':       {bg:'rgba(255,54,33,0.1)',    border:'rgba(255,54,33,0.3)',    text:'#FF8070', icon:'📋'},
+  'Azure Monitor':       {bg:'rgba(0,120,212,0.1)',    border:'rgba(0,120,212,0.3)',    text:'#50B4FC', icon:'📈'},
+  'Azure DevOps':        {bg:'rgba(0,120,212,0.1)',    border:'rgba(0,120,212,0.3)',    text:'#50B4FC', icon:'🔵'},
+  'Grafana':             {bg:'rgba(242,113,43,0.12)',  border:'rgba(242,113,43,0.35)',  text:'#F7894A', icon:'📉'},
+  'Star Schema':         {bg:'rgba(245,158,11,0.1)',   border:'rgba(245,158,11,0.3)',   text:'#FCD34D', icon:'⭐'},
+  'SCD Type 2':          {bg:'rgba(139,92,246,0.1)',   border:'rgba(139,92,246,0.3)',   text:'#C4B5FD', icon:'🔀'},
+  'Medallion Architecture':{bg:'rgba(0,120,212,0.1)', border:'rgba(0,120,212,0.3)',    text:'#93C5FD', icon:'🏗️'},
+};
+
+const PIPELINE_STAGES = [
+  {label:'SOURCE',    sub:'MES/ERP/Oracle',      color:'#8B5CF6', bg:'rgba(139,92,246,0.13)',  border:'rgba(139,92,246,0.42)'},
+  {label:'INGEST',    sub:'ADF Pipelines',        color:'#0078D4', bg:'rgba(0,120,212,0.13)',   border:'rgba(0,120,212,0.5)'},
+  {label:'BRONZE',    sub:'Raw → ADLS Gen2',      color:'#CD853F', bg:'rgba(205,133,63,0.13)',  border:'rgba(205,133,63,0.42)'},
+  {label:'TRANSFORM', sub:'Databricks PySpark',   color:'#FF3621', bg:'rgba(255,54,33,0.13)',   border:'rgba(255,54,33,0.42)'},
+  {label:'SILVER',    sub:'Cleansed + dbt',       color:'#94A3B8', bg:'rgba(148,163,184,0.1)',  border:'rgba(148,163,184,0.32)'},
+  {label:'GOLD',      sub:'Aggregated / Delta',   color:'#F59E0B', bg:'rgba(245,158,11,0.13)',  border:'rgba(245,158,11,0.42)'},
+  {label:'SERVE',     sub:'Synapse + Power BI',   color:'#10B981', bg:'rgba(16,185,129,0.13)',  border:'rgba(16,185,129,0.42)'},
+];
+
+const PIPELINE_DETAILS = {
+  SOURCE:    {tools:['MES System','ERP System','Oracle DB','SMT Machines'],       desc:'Manufacturing systems and on-premises Oracle databases as raw data sources.'},
+  INGEST:    {tools:['Azure Data Factory','ADF Triggers','Watermarking','Tumbling Windows'], desc:'Incremental ADF pipelines with watermarking — only new records processed each run.'},
+  BRONZE:    {tools:['ADLS Gen2','Delta Lake','Parquet','Raw Schema'],            desc:'Raw data landed exactly as received. Full audit trail. No transformations yet.'},
+  TRANSFORM: {tools:['Azure Databricks','PySpark','Python','Great Expectations'], desc:'Distributed PySpark transforms with Great Expectations quality gates before promotion.'},
+  SILVER:    {tools:['Delta Lake','dbt Models','dbt Tests','Schema Enforcement'],  desc:'Cleansed, enriched, quality-validated data. All dbt schema tests must pass.'},
+  GOLD:      {tools:['Aggregations','SCD Type 2','Star Schema','Delta Lake'],     desc:'Business-ready metrics — yield, OEE, defect rates — optimised for BI queries.'},
+  SERVE:     {tools:['Synapse Analytics','Power BI','Azure SQL','Self-Serve'],    desc:'Executive dashboards and self-serve reports consumed by production heads daily.'},
+};
+
+const STATS = [
+  {num:'2+',   label:'Years Exp'},
+  {num:'1M+',  label:'Records/Mo'},
+  {num:'90%',  label:'Time Saved'},
+  {num:'20+',  label:'ADF Pipelines'},
+  {num:'100+', label:'Hrs Saved/Mo'},
+  {num:'4',    label:'Live Dashboards'},
+];
+
+const EXPERIENCE = [
+  {
+    role:'Data Engineer', company:'Optiemus Electronics Ltd.', location:'Noida, India',
+    period:'Mar 2024 – Present', color:'#0078D4',
+    points:[
+      'Cut production analysis time by <b>90%</b> — automated 1M+ monthly logs through ADF → Databricks → Synapse pipeline.',
+      'Built complete <b>Bronze → Silver → Gold medallion architecture</b> on ADLS Gen2 and Delta Lake from scratch.',
+      'Introduced <b>dbt transformation models</b> with schema tests replacing untested ad-hoc SQL scripts.',
+      'Implemented <b>Great Expectations</b> quality gates — broken data now caught before it reaches dashboards.',
+      'Brought all infrastructure under <b>Terraform</b> — reproducible environments across dev, staging, and prod.',
+      'Saved <b>100+ engineering hours/month</b> automating SMT, Final Assembly, and Packaging line reporting.',
+      'Built <b>Grafana + Azure Monitor</b> observability — failures alert within 2 minutes with full context.',
+      'Implemented <b>Unity Catalog</b> for data governance, RBAC, and metadata management across Databricks.',
+    ],
+  },
+  {
+    role:'Data Analyst Intern', company:'Living Things', location:'Mumbai, India',
+    period:'Oct 2023 – Jan 2024', color:'#F59E0B',
+    points:[
+      'Analysed business datasets with Python and SQL to surface operational insights for leadership decisions.',
+      'Automated recurring data validation workflows, standardising the pipeline and reducing manual effort.',
+      'Created dashboards communicating findings clearly to non-technical stakeholders.',
+    ],
+  },
+  {
+    role:'Network Intern', company:'Ekaga Group', location:'Delhi, India',
+    period:'May 2022 – Jun 2022', color:'#6B7280',
+    points:['Configured GPON networks for an IPMPLS Defence Project — IP planning, hardware setup, network troubleshooting.'],
+  },
+];
+
+const DE_PROJECTS = [
+  {
+    title:'Azure Manufacturing Data Pipeline', type:'Production · Data Engineering', featured:true,
+    desc:'End-to-end ETL/ELT pipeline replacing manual log analysis for 1M+ monthly production records across SMT, Assembly, and Packaging lines.',
+    impact:['90% reduction in analysis time','100+ engineering hours saved/month','4 live Power BI dashboards used daily'],
+    pipeline:['MES/ERP','ADF','Databricks','Delta Lake','Power BI'],
+    pColors:['#8B5CF6','#0078D4','#FF3621','#F59E0B','#10B981'],
+    tags:['Azure Data Factory','PySpark','Delta Lake','Azure Synapse','Power BI','Terraform','Great Expectations','Azure Monitor'],
+    github:null,
+  },
+  {
+    title:'dbt + Snowflake Transformation Layer', type:'Analytics Engineering', featured:true,
+    desc:'Rebuilt ad-hoc SQL scripts into modular dbt models with staging, intermediate, and mart layers. Full schema test coverage, freshness checks, CI/CD via GitHub Actions.',
+    impact:['100% test coverage on critical models','Zero untested SQL in production','Analytics team fully self-serve'],
+    pipeline:['Source','dbt Staging','dbt Intermediate','dbt Marts','Snowflake'],
+    pColors:['#8B5CF6','#FF694A','#FF694A','#FF694A','#29B5E8'],
+    tags:['dbt','Snowflake','GitHub Actions','SQL','CI/CD','Star Schema','SCD Type 2'],
+    github:null,
+  },
+  {
+    title:'MES Self-Serve Reporting App', type:'Full Stack · Data Engineering', featured:false,
+    desc:'ASP.NET Core MVC web app with dynamic filters, server-side pagination, and optimised PL/SQL procedures. Eliminated IT dependency for production data queries.',
+    impact:['80% reduction in query turnaround time','Zero IT tickets for data requests','Production teams fully self-serve'],
+    pipeline:['Oracle MES','PL/SQL','ASP.NET','MVC','Reports'],
+    pColors:['#8B5CF6','#CC2927','#0078D4','#0078D4','#10B981'],
+    tags:['ASP.NET Core','PL/SQL','SQL','MVC','Pagination'],
+    github:null,
+  },
+];
+
+const DA_PROJECTS = [
+  {title:'Gramener Case Study',          desc:'EDA on real-world business data — cleaning, visualisation, and statistical analysis using Python.',  tags:['Python','Pandas','EDA','Matplotlib','Jupyter'], github:'https://github.com/Neeraj600/Gramener_Case_Study.ipynb'},
+  {title:'Sales Insights Data Analysis',  desc:'Sales performance pipeline — ETL, transformation, and visualisation to surface revenue trends and KPIs.', tags:['SQL','Python','Data Viz','Business Analysis'],   github:'https://github.com/Neeraj600/Sales-insights-data-analysis-project'},
+  {title:'Loan Application Analysis',     desc:'Loan default risk pattern analysis — feature correlations and risk indicators to support lending decisions.', tags:['Python','Pandas','NumPy','Risk Analysis','Finance'], github:'https://github.com/Neeraj600/Analyzing-Loan-Application-Data-Using-Python'},
+  {title:'Retail Traffic Management',     desc:'Retail traffic pattern modelling to optimise staffing and floor layout using Python analysis.',          tags:['Python','Data Analysis','Visualisation','Retail'],  github:'https://github.com/Neeraj600/Retail-Store-Traffic-Management'},
+];
+
+const SKILL_GROUPS = [
+  {cat:'Azure Cloud Stack',         color:'#0078D4', icon:'☁️',  skills:['Azure Data Factory','Azure Databricks','Synapse Analytics','ADLS Gen2','Azure Event Hubs','Azure Key Vault','Azure Purview','Azure Monitor','Azure DevOps']},
+  {cat:'Big Data & Processing',     color:'#FF3621', icon:'⚡',  skills:['Apache Spark','PySpark','Delta Lake','Apache Iceberg','Apache Kafka','Spark Streaming','Apache Airflow','Apache Flink']},
+  {cat:'Data Transformation',       color:'#FF694A', icon:'🔄',  skills:['dbt','Medallion Architecture','SCD Type 2','Data Vault 2.0','Incremental Loading','Watermarking','Star Schema','ELT / ETL']},
+  {cat:'Data Quality & Governance', color:'#10B981', icon:'🛡️',  skills:['Great Expectations','dbt Tests','Unity Catalog','Data Lineage','RBAC','GDPR Compliance','Data Contracts']},
+  {cat:'Warehousing & Storage',     color:'#29B5E8', icon:'🗄️',  skills:['Snowflake','Synapse Dedicated Pools','Delta Lake','Apache Iceberg','Oracle','MySQL','Parquet','Avro']},
+  {cat:'DevOps & IaC',              color:'#7B42BC', icon:'⚙️',  skills:['Terraform','Docker','GitHub Actions','Azure DevOps','ARM Templates','Bicep','CI/CD Pipelines','Kubernetes']},
+  {cat:'Languages',                 color:'#3776AB', icon:'💻',  skills:['Python','PySpark','SQL (Advanced)','PL/SQL','Bash','PowerShell','C#','JavaScript']},
+  {cat:'BI & Observability',        color:'#F2C811', icon:'📊',  skills:['Power BI','Grafana','Azure Monitor','Log Analytics','Self-Serve Analytics']},
+];
+
+const CERTS = [
+  {title:'Azure Data Engineering for Data Engineers: DP-203 and Beyond', issuer:'Udemy',        year:'2026', status:'completed',   color:'#0078D4', icon:'🔷'},
+  {title:'Azure Data Engineering Masters: Build Scalable Solutions',     issuer:'Udemy',        year:'2025', status:'completed',   color:'#0078D4', icon:'🔷'},
+  {title:'Microsoft Certified: Azure Data Engineer Associate (DP-203)',  issuer:'Microsoft',    year:'2026', status:'in-progress', color:'#50B4FC', icon:'🏆'},
+  {title:'Databricks Certified Data Engineer Associate',                 issuer:'Databricks',   year:'2026', status:'in-progress', color:'#FF3621', icon:'🔶'},
+];
+
+const TICKER = ['Azure Data Factory','Azure Databricks','PySpark','Delta Lake','Apache Kafka','dbt','Snowflake','Synapse Analytics','Terraform','Great Expectations','Apache Iceberg','Power BI','Apache Airflow','GitHub Actions','Docker','Python','Unity Catalog','ADLS Gen2','Spark Streaming','CI/CD','Medallion Architecture','Data Vault 2.0'];
+
+// ── HOOKS ────────────────────────────────────────────────────────────────────
+
+function useReveal(delay = 0) {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current; if (!el) return;
+    const obs = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { setTimeout(() => el.classList.add('visible'), delay); obs.unobserve(el); }
+    }, {threshold:0.08, rootMargin:'0px 0px -50px 0px'});
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [delay]);
+  return ref;
+}
+
+// ── CURSOR ───────────────────────────────────────────────────────────────────
+
+function Cursor() {
+  const dot  = useRef(null);
+  const ring = useRef(null);
+  const pos  = useRef({x:0,y:0});
+  const rPos = useRef({x:0,y:0});
+
+  useEffect(() => {
+    const move = e => { pos.current = {x:e.clientX,y:e.clientY}; };
+    window.addEventListener('mousemove', move);
+    let raf;
+    const tick = () => {
+      rPos.current.x += (pos.current.x - rPos.current.x) * 0.13;
+      rPos.current.y += (pos.current.y - rPos.current.y) * 0.13;
+      if(dot.current)  { dot.current.style.left  = pos.current.x+'px'; dot.current.style.top  = pos.current.y+'px'; }
+      if(ring.current) { ring.current.style.left = rPos.current.x+'px'; ring.current.style.top = rPos.current.y+'px'; }
+      raf = requestAnimationFrame(tick);
+    };
+    tick();
+    const big   = () => { if(ring.current){ring.current.style.width='46px';ring.current.style.height='46px';} };
+    const small = () => { if(ring.current){ring.current.style.width='32px';ring.current.style.height='32px';} };
+    document.addEventListener('mouseover', e => { if(e.target.closest('a,button,[data-hover]')) big(); else small(); });
+    return () => { window.removeEventListener('mousemove',move); cancelAnimationFrame(raf); };
+  }, []);
+
+  return (
+    <>
+      <div ref={dot}  id="cursor-dot" />
+      <div ref={ring} id="cursor-ring" />
+    </>
+  );
+}
+
+// ── NAVBAR ───────────────────────────────────────────────────────────────────
+
+const NAV_LINKS = [
+  ['#about','about'],['#experience','experience'],['#pipeline','pipeline'],
+  ['#de-projects','de_projects'],['#da-projects','da_projects'],
+  ['#skills','skills'],['#certs','certs'],['#contact','contact'],
+];
+
+function Navbar() {
+  const [scrolled,  setScrolled]  = useState(false);
+  const [active,    setActive]    = useState('');
+  const [menuOpen,  setMenuOpen]  = useState(false);
+
+  useEffect(() => {
+    const fn = () => {
+      setScrolled(window.scrollY > 40);
+      document.querySelectorAll('section[id]').forEach(s => {
+        if (window.scrollY >= s.offsetTop - 180) setActive(s.id);
+      });
+    };
+    window.addEventListener('scroll', fn);
+    return () => window.removeEventListener('scroll', fn);
+  }, []);
+
+  return (
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled?'glass border-b py-3':'py-5'}`}
+      style={{borderColor:'rgba(0,120,212,0.15)'}}>
+      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+        <a href="#" className="font-mono text-sm tracking-widest" style={{color:'#0078D4'}}>
+          neeraj<span style={{color:'#F59E0B'}}>.</span><span style={{color:'#50B4FC'}}>dev</span>
+        </a>
+        <ul className="hidden md:flex items-center gap-5">
+          {NAV_LINKS.map(([href,label]) => (
+            <li key={href}>
+              <a href={href} className={`nav-link relative font-mono text-[0.68rem] tracking-widest uppercase transition-colors duration-200 ${active===href.slice(1)?'text-[#00D4FF]':'text-slate-500 hover:text-slate-200'}`}>
+                {label}
+              </a>
+            </li>
+          ))}
+        </ul>
+        <a href="mailto:neerajguleria956@gmail.com"
+          className="hidden md:inline-flex items-center gap-2 px-4 py-2 font-mono text-xs tracking-wider rounded transition-all duration-200 hover:bg-[rgba(0,120,212,0.12)]"
+          style={{border:'1px solid rgba(0,120,212,0.35)',color:'#50B4FC'}}>
+          <span className="w-2 h-2 rounded-full bg-[#10B981]" style={{animation:'pulseGlow 2s ease-in-out infinite'}}/>
+          Available
+        </a>
+        <button className="md:hidden text-slate-400" onClick={()=>setMenuOpen(!menuOpen)}>
+          <div className="w-6 h-0.5 bg-current mb-1.5"/><div className="w-6 h-0.5 bg-current mb-1.5"/><div className="w-4 h-0.5 bg-current"/>
+        </button>
+      </div>
+      {menuOpen && (
+        <div className="md:hidden glass px-6 py-4 border-t" style={{borderColor:'rgba(0,120,212,0.15)'}}>
+          {NAV_LINKS.map(([href,label]) => (
+            <a key={href} href={href} onClick={()=>setMenuOpen(false)}
+              className="block font-mono text-sm tracking-widest py-2.5 text-slate-400 hover:text-[#00D4FF] transition-colors border-b"
+              style={{borderColor:'rgba(255,255,255,0.04)'}}>
+              {label}
+            </a>
+          ))}
+        </div>
+      )}
+    </nav>
+  );
+}
+
+// ── PARTICLES ────────────────────────────────────────────────────────────────
+
+function Particles() {
+  const canvasRef = useRef(null);
+  useEffect(() => {
+    const c = canvasRef.current;
+    const ctx = c.getContext('2d');
+    let pts = [], raf;
+    const resize = () => { c.width = window.innerWidth; c.height = window.innerHeight; };
+    resize();
+    window.addEventListener('resize', resize);
+    class P {
+      constructor(){ this.reset(); }
+      reset(){
+        this.x = Math.random()*c.width; this.y = Math.random()*c.height;
+        this.s = Math.random()*1.6+0.3; this.vx=(Math.random()-.5)*.22; this.vy=(Math.random()-.5)*.22;
+        this.op=Math.random()*.3+.05; this.col=Math.random()>.6?'#F59E0B':Math.random()>.5?'#50B4FC':'#00D4FF';
+      }
+      update(){ this.x+=this.vx; this.y+=this.vy; if(this.x<0||this.x>c.width||this.y<0||this.y>c.height)this.reset(); }
+      draw(){ ctx.beginPath(); ctx.arc(this.x,this.y,this.s,0,Math.PI*2); ctx.fillStyle=this.col; ctx.globalAlpha=this.op; ctx.fill(); }
+    }
+    for(let i=0;i<85;i++) pts.push(new P());
+    const loop=()=>{
+      ctx.clearRect(0,0,c.width,c.height); ctx.globalAlpha=1;
+      pts.forEach(p=>{ p.update(); p.draw(); });
+      for(let i=0;i<pts.length;i++) for(let j=i+1;j<pts.length;j++){
+        const dx=pts[i].x-pts[j].x, dy=pts[i].y-pts[j].y, d=Math.sqrt(dx*dx+dy*dy);
+        if(d<100){ ctx.beginPath(); ctx.moveTo(pts[i].x,pts[i].y); ctx.lineTo(pts[j].x,pts[j].y);
+          ctx.strokeStyle='#0078D4'; ctx.globalAlpha=(1-d/100)*.07; ctx.lineWidth=0.5; ctx.stroke(); }
+      }
+      ctx.globalAlpha=1; raf=requestAnimationFrame(loop);
+    };
+    loop();
+    return ()=>{ cancelAnimationFrame(raf); window.removeEventListener('resize',resize); };
+  },[]);
+  return <canvas ref={canvasRef} className="absolute inset-0 z-0 pointer-events-none"/>;
+}
+
+// ── HERO ─────────────────────────────────────────────────────────────────────
+
+function Hero() {
+  return (
+    <section id="hero" className="relative min-h-screen flex items-center overflow-hidden bg-grid">
+      <Particles/>
+      {/* Radial glow */}
+      <div className="absolute inset-0 z-0 pointer-events-none" style={{background:'radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0,120,212,0.18), transparent)'}}/>
+      {/* Top line */}
+      <div className="absolute top-0 left-0 right-0 h-px z-0" style={{background:'linear-gradient(90deg,transparent,rgba(0,120,212,0.5),transparent)'}}/>
+      {/* Background pipeline SVG */}
+      <svg className="absolute inset-0 z-0 w-full h-full pointer-events-none opacity-20" preserveAspectRatio="xMidYMid slice">
+        <path d="M 0 55% Q 30% 35% 55% 52% Q 78% 70% 100% 48%" fill="none" stroke="#0078D4" strokeWidth="1" className="flow-line"/>
+        <path d="M 0 35% Q 28% 55% 58% 32% Q 82% 15% 100% 38%" fill="none" stroke="#00D4FF" strokeWidth="0.7" className="flow-slow"/>
+        <path d="M 0 72% Q 22% 52% 48% 62% Q 72% 72% 100% 58%" fill="none" stroke="#F59E0B" strokeWidth="0.5" className="flow-amber"/>
+      </svg>
+
+      <div className="relative z-10 max-w-7xl mx-auto px-6 pt-24 pb-16 w-full">
+        <div className="max-w-2xl">
+          {/* Badge */}
+          <div className="anim-slide-1 inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6"
+            style={{border:'1px solid rgba(0,120,212,0.32)',background:'rgba(0,120,212,0.07)'}}>
+            <span className="w-2 h-2 rounded-full bg-[#10B981]" style={{animation:'pulseGlow 2s ease-in-out infinite'}}/>
+            <span className="font-mono text-[0.68rem] tracking-widest uppercase" style={{color:'#50B4FC'}}>Open to Data Engineering Roles</span>
+          </div>
+          {/* Name */}
+          <h1 className="font-display font-extrabold leading-[0.95] mb-3 anim-slide-2">
+            <span className="block text-5xl md:text-7xl text-white">Neeraj Singh</span>
+            <span className="block text-5xl md:text-7xl text-grad-neon" style={{filter:'drop-shadow(0 0 30px rgba(0,212,255,0.35))'}}>Guleria</span>
+          </h1>
+          {/* Title */}
+          <div className="font-mono text-lg md:text-xl mb-5 tracking-wide anim-slide-3" style={{color:'#F59E0B'}}>
+            <span className="text-slate-500">&lt;</span> Azure Data Engineer <span className="text-slate-500">/&gt;</span>
+          </div>
+          {/* Desc */}
+          <p className="font-body text-base text-slate-400 leading-relaxed mb-8 max-w-xl anim-slide-4">
+            I build pipelines that process <span className="text-white font-medium">1M+ records a month</span> and don't break at 2am. Azure-first. Real production scale. Obsessed with <span style={{color:'#50B4FC'}}>data quality</span> and <span style={{color:'#10B981'}}>observability</span>.
+          </p>
+          {/* Stats */}
+          <div className="grid grid-cols-3 md:grid-cols-6 gap-2 mb-8 anim-slide-4">
+            {STATS.map((s,i) => (
+              <div key={i} className="text-center p-3 rounded-xl transition-all duration-200 group"
+                style={{border:'1px solid rgba(0,120,212,0.15)',background:'rgba(0,120,212,0.04)'}}
+                onMouseEnter={e=>{e.currentTarget.style.borderColor='rgba(0,212,255,0.35)';e.currentTarget.style.background='rgba(0,120,212,0.1)';}}
+                onMouseLeave={e=>{e.currentTarget.style.borderColor='rgba(0,120,212,0.15)';e.currentTarget.style.background='rgba(0,120,212,0.04)';}}>
+                <div className="font-display font-bold text-xl text-grad-azure">{s.num}</div>
+                <div className="font-mono text-[0.52rem] text-slate-500 tracking-wider mt-0.5 leading-tight">{s.label}</div>
+              </div>
+            ))}
+          </div>
+          {/* Buttons */}
+          <div className="flex flex-wrap gap-3 anim-slide-5">
+            {[
+              {href:'#de-projects', label:'View Projects →', primary:true},
+              {href:'#pipeline',    label:'See Pipeline',    primary:false},
+              {href:'https://github.com/Neeraj600', label:'GitHub ↗', primary:false, ext:true},
+              {href:'https://www.linkedin.com/in/neeraj-guleria', label:'LinkedIn ↗', primary:false, ext:true},
+            ].map((b,i) => (
+              <a key={i} href={b.href} target={b.ext?'_blank':undefined} rel={b.ext?'noreferrer':undefined}
+                className="inline-flex items-center gap-2 px-5 py-2.5 font-mono text-xs tracking-widest rounded-lg transition-all duration-200 hover:-translate-y-0.5"
+                style={b.primary
+                  ? {background:'#0078D4',color:'#fff',border:'1px solid #0078D4'}
+                  : {background:'transparent',color:'#94A3B8',border:'1px solid rgba(255,255,255,0.1)'}}
+                onMouseEnter={e=>{if(!b.primary){e.currentTarget.style.borderColor='rgba(0,212,255,0.35)';e.currentTarget.style.color='#00D4FF';}else{e.currentTarget.style.background='#50B4FC';}}}
+                onMouseLeave={e=>{if(!b.primary){e.currentTarget.style.borderColor='rgba(255,255,255,0.1)';e.currentTarget.style.color='#94A3B8';}else{e.currentTarget.style.background='#0078D4';}}}>
+                {b.label}
+              </a>
+            ))}
+          </div>
+        </div>
+
+        {/* Right: vertical pipeline diagram */}
+        <div className="hidden xl:flex flex-col items-center absolute right-16 top-1/2 -translate-y-1/2 z-10">
+          {PIPELINE_STAGES.map((s,i) => (
+            <div key={s.label} className="flex flex-col items-center">
+              <div className="relative px-4 py-2.5 rounded-xl text-center transition-all duration-300 hover:scale-105 hover:-translate-x-1 group"
+                style={{background:s.bg,border:`1px solid ${s.border}`,minWidth:'188px',cursor:'default'}}
+                onMouseEnter={e=>{e.currentTarget.style.boxShadow=`0 6px 20px ${s.color}30`;}}
+                onMouseLeave={e=>{e.currentTarget.style.boxShadow='none';}}>
+                <div className="font-mono text-[0.58rem] tracking-widest opacity-70 mb-0.5" style={{color:s.color}}>{s.label}</div>
+                <div className="font-body text-xs text-slate-300">{s.sub}</div>
+                {/* Scan line on hover */}
+                <div className="absolute inset-x-0 h-px opacity-0 group-hover:opacity-60 transition-opacity" style={{background:`linear-gradient(90deg,transparent,${s.color},transparent)`,animation:'scanLine 2s linear infinite'}}/>
+              </div>
+              {i < PIPELINE_STAGES.length-1 && (
+                <svg width="2" height="26" className="overflow-visible">
+                  <line x1="1" y1="0" x2="1" y2="26" stroke={s.color} strokeWidth="1.5" strokeDasharray="4 3" className="flow-line" opacity="0.75"/>
+                  <circle cx="1" cy="13" r="3" fill={s.color} opacity="0.9" style={{animation:`nodePulse ${1.4+i*.25}s ease-in-out infinite`}}/>
+                </svg>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Scroll hint */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 opacity-35">
+        <span className="font-mono text-[0.58rem] text-slate-500 tracking-widest">SCROLL</span>
+        <div className="w-px h-10" style={{background:'linear-gradient(to bottom,#0078D4,transparent)',animation:'pulseGlow 2s ease-in-out infinite'}}/>
+      </div>
+    </section>
+  );
+}
+
+// ── ABOUT ────────────────────────────────────────────────────────────────────
+
+function About() {
+  const ref = useReveal();
+  const doubled = [...TICKER, ...TICKER];
+  return (
+    <section id="about" className="py-24 relative">
+      <div className="max-w-7xl mx-auto px-6">
+        <div ref={ref} className="reveal">
+          <p className="font-mono text-xs tracking-[0.2em] uppercase mb-3 flex items-center gap-3" style={{color:'#0078D4'}}>
+            <span className="w-8 h-px bg-[#0078D4]"/> About
+          </p>
+          <h2 className="font-display text-4xl md:text-5xl font-bold text-white mb-8 leading-tight">
+            Building pipelines that<br/><span className="text-grad-azure">actually work in prod.</span>
+          </h2>
+          <div className="grid md:grid-cols-2 gap-10 max-w-4xl">
+            <div>
+              <p className="font-body text-slate-400 leading-relaxed text-[1.02rem] mb-4">
+                I'm a Data Engineer based in New Delhi with 2+ years of hands-on experience on the Azure stack. Currently at <span className="text-white">Optiemus Electronics</span>, where I own the full data lifecycle — from raw ingestion out of MES and ERP systems, through PySpark transformations in Databricks, to the Power BI dashboards that production heads use every morning.
+              </p>
+              <p className="font-body text-slate-500 leading-relaxed text-sm">
+                I care about pipelines being <span style={{color:'#50B4FC'}}>reliable</span>, <span style={{color:'#F59E0B'}}>observable</span>, and <span style={{color:'#10B981'}}>tested</span> — not just running. A pipeline that crashes is easier to fix than one that silently produces wrong answers.
+              </p>
+            </div>
+            <div className="space-y-2.5">
+              {[
+                {label:'Location',  value:'New Delhi, India',           color:'#0078D4'},
+                {label:'Current',   value:'Optiemus Electronics Ltd.',  color:'#50B4FC'},
+                {label:'Focus',     value:'Azure Data Engineering',     color:'#F59E0B'},
+                {label:'Education', value:'B.Sc. Data Science, 2023',   color:'#10B981'},
+                {label:'Email',     value:'neerajguleria956@gmail.com', color:'#00D4FF'},
+              ].map(item => (
+                <div key={item.label} className="flex items-center gap-3 p-3 rounded-lg transition-colors duration-200"
+                  style={{border:'1px solid rgba(0,120,212,0.1)',background:'rgba(0,120,212,0.03)'}}
+                  onMouseEnter={e=>{e.currentTarget.style.borderColor='rgba(0,120,212,0.28)';e.currentTarget.style.background='rgba(0,120,212,0.07)';}}
+                  onMouseLeave={e=>{e.currentTarget.style.borderColor='rgba(0,120,212,0.1)';e.currentTarget.style.background='rgba(0,120,212,0.03)';}}>
+                  <span className="font-mono text-xs tracking-wider w-20 flex-shrink-0" style={{color:item.color}}>{item.label}</span>
+                  <span className="font-body text-sm text-slate-300">{item.value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        {/* Ticker */}
+        <div className="overflow-hidden my-12 py-3" style={{borderTop:'1px solid rgba(0,120,212,0.12)',borderBottom:'1px solid rgba(0,120,212,0.12)',background:'rgba(0,120,212,0.02)'}}>
+          <div className="flex gap-8 whitespace-nowrap anim-ticker">
+            {doubled.map((item,i) => (
+              <span key={i} className="inline-flex items-center gap-2 font-mono text-xs text-slate-500 tracking-wider flex-shrink-0">
+                <span className="w-1.5 h-1.5 rounded-full" style={{background:'#0078D4'}}/>
+                {item}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── EXPERIENCE ───────────────────────────────────────────────────────────────
+
+function Experience() {
+  const titleRef = useReveal();
+  return (
+    <section id="experience" className="py-24" style={{background:'rgba(13,18,32,0.4)'}}>
+      <div className="max-w-7xl mx-auto px-6">
+        <div ref={titleRef} className="reveal mb-12">
+          <p className="font-mono text-xs tracking-[0.2em] uppercase mb-3 flex items-center gap-3" style={{color:'#0078D4'}}><span className="w-8 h-px bg-[#0078D4]"/>Experience</p>
+          <h2 className="font-display text-4xl md:text-5xl font-bold text-white">Where I've built things.</h2>
+        </div>
+        <div className="relative max-w-3xl">
+          <div className="timeline-line"/>
+          <div className="space-y-5 pl-8">
+            {EXPERIENCE.map((item,i) => {
+              const ref = useReveal(i*100);
+              return (
+                <div key={i} ref={ref} className="reveal relative">
+                  {/* Dot */}
+                  <div className="absolute -left-8 top-6 w-3.5 h-3.5 rounded-full border-2 border-[#060912]"
+                    style={{background:item.color,boxShadow:`0 0 12px ${item.color}90`}}/>
+                  {/* Card */}
+                  <div className="proj-card p-5 rounded-2xl backdrop-blur"
+                    style={{border:`1px solid ${item.color}22`,background:'rgba(12,17,32,0.85)'}}
+                    onMouseEnter={e=>{e.currentTarget.style.borderColor=`${item.color}45`;}}
+                    onMouseLeave={e=>{e.currentTarget.style.borderColor=`${item.color}22`;}}>
+                    <div className="flex flex-wrap items-start justify-between gap-2 mb-4">
+                      <div>
+                        <h3 className="font-display text-xl font-semibold text-white mb-1">{item.role}</h3>
+                        <div className="flex items-center gap-2 text-sm">
+                          <span className="font-medium" style={{color:item.color}}>{item.company}</span>
+                          <span className="text-slate-600">·</span>
+                          <span className="text-slate-500">{item.location}</span>
+                        </div>
+                      </div>
+                      <span className="font-mono text-xs tracking-wider px-3 py-1 rounded-full" style={{color:item.color,border:`1px solid ${item.color}40`,background:`${item.color}0a`}}>{item.period}</span>
+                    </div>
+                    <ul className="space-y-2">
+                      {item.points.map((pt,j) => (
+                        <li key={j} className="flex gap-2 text-sm text-slate-400 leading-relaxed">
+                          <span className="mt-1.5 text-[0.6rem] flex-shrink-0" style={{color:item.color}}>▸</span>
+                          <span dangerouslySetInnerHTML={{__html:pt.replace(/<b>/g,'<strong class="text-slate-200">').replace(/<\/b>/g,'</strong>')}}/>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── PIPELINE VIZ ─────────────────────────────────────────────────────────────
+
+function PipelineViz() {
+  const [active, setActive] = useState(null);
+  const ref = useReveal();
+  return (
+    <section id="pipeline" className="py-24">
+      <div className="max-w-7xl mx-auto px-6">
+        <div ref={ref} className="reveal">
+          <p className="font-mono text-xs tracking-[0.2em] uppercase mb-3 flex items-center gap-3" style={{color:'#0078D4'}}><span className="w-8 h-px bg-[#0078D4]"/>Architecture</p>
+          <h2 className="font-display text-4xl md:text-5xl font-bold text-white mb-2">My data pipeline.</h2>
+          <p className="font-body text-slate-500 mb-12 text-sm">Hover any stage to see the tools behind it.</p>
+
+          {/* Horizontal pipeline */}
+          <div className="overflow-x-auto pb-6">
+            <div className="flex items-center gap-0 min-w-max mx-auto">
+              {PIPELINE_STAGES.map((s,i) => (
+                <div key={s.label} className="flex items-center">
+                  <div className="relative flex flex-col items-center"
+                    onMouseEnter={()=>setActive(s.label)} onMouseLeave={()=>setActive(null)}
+                    style={{cursor:'default'}}>
+                    {/* Node */}
+                    <div className="w-36 rounded-2xl p-4 text-center transition-all duration-300 border"
+                      style={{
+                        background: active===s.label ? s.bg.replace('0.13','0.28') : s.bg,
+                        borderColor: active===s.label ? s.border.replace('0.42','0.75').replace('0.5','0.85') : s.border,
+                        transform: active===s.label ? 'translateY(-6px) scale(1.05)' : 'none',
+                        boxShadow: active===s.label ? `0 10px 28px ${s.color}35` : 'none',
+                      }}>
+                      {/* Pulsing indicator */}
+                      <div className="flex justify-center mb-2">
+                        <div className="w-2.5 h-2.5 rounded-full" style={{background:s.color,boxShadow:`0 0 8px ${s.color}`,animation:`nodePulse ${1.4+i*.22}s ease-in-out infinite`}}/>
+                      </div>
+                      <div className="font-mono text-[0.58rem] tracking-widest mb-1 opacity-70" style={{color:s.color}}>{s.label}</div>
+                      <div className="font-body text-xs text-slate-300 leading-tight">{s.sub}</div>
+                    </div>
+                    {/* Tooltip */}
+                    {active===s.label && (
+                      <div className="absolute top-full mt-3 w-56 rounded-2xl p-4 z-30 glass shadow-2xl"
+                        style={{border:`1px solid ${s.border}`}}>
+                        <div className="font-mono text-[0.62rem] tracking-wider mb-2" style={{color:s.color}}>Tools used</div>
+                        <div className="flex flex-wrap gap-1 mb-3">
+                          {PIPELINE_DETAILS[s.label].tools.map(t=>(
+                            <span key={t} className="font-mono text-[0.58rem] px-2 py-0.5 rounded text-slate-400"
+                              style={{background:`${s.color}12`,border:`1px solid ${s.color}28`}}>{t}</span>
+                          ))}
+                        </div>
+                        <p className="font-body text-[0.75rem] text-slate-500 leading-relaxed">{PIPELINE_DETAILS[s.label].desc}</p>
+                      </div>
+                    )}
+                  </div>
+                  {/* Connector */}
+                  {i < PIPELINE_STAGES.length-1 && (
+                    <div className="flex items-center mx-1">
+                      <svg width="44" height="22" className="overflow-visible">
+                        <line x1="0" y1="11" x2="36" y2="11" stroke={s.color} strokeWidth="1.5" strokeDasharray="5 4" className="flow-line" opacity="0.75"/>
+                        <polygon points="34,7 42,11 34,15" fill={PIPELINE_STAGES[i+1].color} opacity="0.85"/>
+                        <circle cx="18" cy="11" r="2.5" fill={s.color} opacity="0.9" style={{animation:`dataFlow ${2+i*.28}s ease-in-out infinite`}}/>
+                      </svg>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Metrics bar */}
+          <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-3">
+            {[
+              {label:'Pipeline Type', value:'Batch + Near Real-Time',  color:'#0078D4'},
+              {label:'Records/Month', value:'1,000,000+',               color:'#FF3621'},
+              {label:'SLA',           value:'Daily refresh by 6am',    color:'#F59E0B'},
+              {label:'Quality Gate',  value:'Great Expectations + dbt', color:'#10B981'},
+            ].map(m=>(
+              <div key={m.label} className="p-4 rounded-xl transition-all duration-200"
+                style={{border:'1px solid rgba(0,120,212,0.12)',background:'rgba(0,120,212,0.03)'}}
+                onMouseEnter={e=>{e.currentTarget.style.borderColor='rgba(0,120,212,0.28)';}}
+                onMouseLeave={e=>{e.currentTarget.style.borderColor='rgba(0,120,212,0.12)';}}>
+                <div className="font-mono text-[0.58rem] text-slate-500 tracking-widest uppercase mb-1">{m.label}</div>
+                <div className="font-display font-semibold text-sm" style={{color:m.color}}>{m.value}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── TOOL TAG ─────────────────────────────────────────────────────────────────
+
+function ToolTag({name}) {
+  const t = TOOLS[name] || {bg:'rgba(100,116,139,0.1)',border:'rgba(100,116,139,0.25)',text:'#94A3B8',icon:'○'};
+  return (
+    <span className="tool-badge inline-flex items-center gap-1.5 px-2 py-1 rounded-md font-mono text-[0.62rem]"
+      style={{background:t.bg,border:`1px solid ${t.border}`,color:t.text}}>
+      <span style={{fontSize:'0.7rem'}}>{t.icon}</span>{name}
+    </span>
+  );
+}
+
+// ── MINI PIPELINE ────────────────────────────────────────────────────────────
+
+function MiniPipeline({stages, colors}) {
+  return (
+    <div className="flex items-center overflow-x-auto py-2 my-3 gap-0">
+      {stages.map((s,i) => (
+        <div key={i} className="flex items-center flex-shrink-0">
+          <div className="px-2 py-1 rounded-lg font-mono text-[0.58rem] text-center"
+            style={{background:`${colors[i]}12`,border:`1px solid ${colors[i]}38`,color:colors[i],minWidth:'62px'}}>
+            {s}
+          </div>
+          {i < stages.length-1 && (
+            <svg width="18" height="12" className="flex-shrink-0">
+              <line x1="0" y1="6" x2="12" y2="6" stroke={colors[i]} strokeWidth="1" strokeDasharray="3 2" className="flow-line" opacity="0.75"/>
+              <polygon points="10,3 16,6 10,9" fill={colors[i+1]} opacity="0.8"/>
+            </svg>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ── DE PROJECTS ──────────────────────────────────────────────────────────────
+
+function DEProjects() {
+  const titleRef = useReveal();
+  return (
+    <section id="de-projects" className="py-24" style={{background:'rgba(13,18,32,0.4)'}}>
+      <div className="max-w-7xl mx-auto px-6">
+        <div ref={titleRef} className="reveal mb-12">
+          <p className="font-mono text-xs tracking-[0.2em] uppercase mb-3 flex items-center gap-3" style={{color:'#0078D4'}}><span className="w-8 h-px bg-[#0078D4]"/>Data Engineering Projects</p>
+          <h2 className="font-display text-4xl md:text-5xl font-bold text-white leading-tight">Production-grade pipelines.</h2>
+          <p className="font-body text-slate-500 mt-2 text-sm">Real systems. Real scale. Built and maintained in production.</p>
+        </div>
+        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-5">
+          {DE_PROJECTS.map((p,i) => {
+            const ref = useReveal(i*90);
+            return (
+              <div key={i} ref={ref} className="reveal">
+                <div className="proj-card relative rounded-2xl p-6 h-full backdrop-blur overflow-hidden"
+                  style={{border:'1px solid rgba(0,120,212,0.15)',background:'rgba(12,17,32,0.88)'}}
+                  onMouseEnter={e=>{e.currentTarget.style.borderColor='rgba(0,120,212,0.38)';}}
+                  onMouseLeave={e=>{e.currentTarget.style.borderColor='rgba(0,120,212,0.15)';}}>
+                  {/* Top glow */}
+                  <div className="absolute inset-x-0 top-0 h-px opacity-0 transition-opacity duration-300"
+                    style={{background:'linear-gradient(90deg,transparent,rgba(0,120,212,0.6),transparent)'}}
+                    ref={el=>{ if(el){ el.closest('.proj-card')?.addEventListener('mouseenter',()=>el.style.opacity='1'); el.closest('.proj-card')?.addEventListener('mouseleave',()=>el.style.opacity='0'); }}}/>
+                  {/* Featured badge */}
+                  {p.featured && (
+                    <div className="absolute top-4 right-4 font-mono text-[0.58rem] tracking-widest px-2 py-0.5 rounded-full"
+                      style={{background:'rgba(0,120,212,0.15)',border:'1px solid rgba(0,120,212,0.3)',color:'#50B4FC'}}>
+                      FEATURED
+                    </div>
+                  )}
+                  {/* Type */}
+                  <div className="font-mono text-[0.62rem] tracking-widest uppercase mb-2 flex items-center gap-2" style={{color:'#0078D4'}}>
+                    <div className="flex gap-0.5"><span className="w-5 h-0.5 bg-[#0078D4] rounded"/><span className="w-3 h-0.5 bg-[#0078D4] rounded opacity-40"/></div>
+                    {p.type}
+                  </div>
+                  <h3 className="font-display text-xl font-bold text-white mb-3 leading-tight">{p.title}</h3>
+                  <MiniPipeline stages={p.pipeline} colors={p.pColors}/>
+                  <p className="font-body text-sm text-slate-400 leading-relaxed mb-4">{p.desc}</p>
+                  {/* Impact */}
+                  <div className="space-y-1.5 mb-4">
+                    {p.impact.map((imp,j) => (
+                      <div key={j} className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs"
+                        style={{background:'rgba(0,120,212,0.05)',border:'1px solid rgba(0,120,212,0.12)'}}>
+                        <span style={{color:'#10B981'}}>✓</span>
+                        <span className="font-body text-slate-300">{imp}</span>
+                      </div>
+                    ))}
+                  </div>
+                  {/* Tags */}
+                  <div className="flex flex-wrap gap-1.5 mb-4">
+                    {p.tags.map(t=><ToolTag key={t} name={t}/>)}
+                  </div>
+                  {p.github
+                    ? <a href={p.github} target="_blank" rel="noreferrer" className="font-mono text-xs pb-0.5 transition-colors" style={{color:'#0078D4',borderBottom:'1px solid rgba(0,120,212,0.35)'}} onMouseEnter={e=>{e.target.style.color='#00D4FF';e.target.style.borderColor='#00D4FF';}} onMouseLeave={e=>{e.target.style.color='#0078D4';e.target.style.borderColor='rgba(0,120,212,0.35)';}}>View on GitHub ↗</a>
+                    : <span className="font-mono text-xs text-slate-600">Production project · Private repo</span>
+                  }
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── DA PROJECTS ──────────────────────────────────────────────────────────────
+
+function DAProjects() {
+  const titleRef = useReveal();
+  return (
+    <section id="da-projects" className="py-24">
+      <div className="max-w-7xl mx-auto px-6">
+        <div ref={titleRef} className="reveal mb-12">
+          <p className="font-mono text-xs tracking-[0.2em] uppercase mb-3 flex items-center gap-3" style={{color:'#F59E0B'}}><span className="w-8 h-px bg-[#F59E0B]"/>Data Analytics Projects</p>
+          <h2 className="font-display text-4xl md:text-5xl font-bold text-white">Analysis & insight work.</h2>
+          <p className="font-body text-slate-500 mt-2 text-sm">Python, SQL, EDA. Open source on GitHub.</p>
+        </div>
+        <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
+          {DA_PROJECTS.map((p,i) => {
+            const ref = useReveal(i*75);
+            return (
+              <div key={i} ref={ref} className="reveal">
+                <div className="proj-card h-full rounded-2xl p-5 flex flex-col backdrop-blur"
+                  style={{border:'1px solid rgba(245,158,11,0.12)',background:'rgba(12,17,32,0.85)'}}
+                  onMouseEnter={e=>{e.currentTarget.style.borderColor='rgba(245,158,11,0.32)';}}
+                  onMouseLeave={e=>{e.currentTarget.style.borderColor='rgba(245,158,11,0.12)';}}>
+                  <div className="h-px mb-4 opacity-50" style={{background:'linear-gradient(to right,#F59E0B,transparent)'}}/>
+                  <div className="font-mono text-[0.6rem] tracking-widest uppercase mb-2" style={{color:'#F59E0B'}}>Analysis</div>
+                  <h3 className="font-display text-base font-semibold text-white mb-2 leading-snug flex-grow">{p.title}</h3>
+                  <p className="font-body text-xs text-slate-500 leading-relaxed mb-4">{p.desc}</p>
+                  <div className="flex flex-wrap gap-1 mb-4">
+                    {p.tags.map(t=>(
+                      <span key={t} className="font-mono text-[0.58rem] px-2 py-0.5 rounded" style={{background:'rgba(245,158,11,0.07)',border:'1px solid rgba(245,158,11,0.18)',color:'#F59E0B'}}>
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                  <a href={p.github} target="_blank" rel="noreferrer"
+                    className="font-mono text-xs pb-0.5 w-fit mt-auto transition-colors"
+                    style={{color:'#F59E0B',borderBottom:'1px solid rgba(245,158,11,0.3)'}}
+                    onMouseEnter={e=>{e.target.style.color='#FCD34D';e.target.style.borderColor='#F59E0B';}}
+                    onMouseLeave={e=>{e.target.style.color='#F59E0B';e.target.style.borderColor='rgba(245,158,11,0.3)';}}>
+                    View on GitHub ↗
+                  </a>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── SKILLS ───────────────────────────────────────────────────────────────────
+
+function Skills() {
+  const titleRef = useReveal();
+  return (
+    <section id="skills" className="py-24" style={{background:'rgba(13,18,32,0.4)'}}>
+      <div className="max-w-7xl mx-auto px-6">
+        <div ref={titleRef} className="reveal mb-12">
+          <p className="font-mono text-xs tracking-[0.2em] uppercase mb-3 flex items-center gap-3" style={{color:'#0078D4'}}><span className="w-8 h-px bg-[#0078D4]"/>Skills</p>
+          <h2 className="font-display text-4xl md:text-5xl font-bold text-white">The full stack.</h2>
+        </div>
+        <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
+          {SKILL_GROUPS.map((g,gi) => {
+            const ref = useReveal(gi*55);
+            return (
+              <div key={gi} ref={ref} className="reveal">
+                <div className="proj-card h-full rounded-2xl p-5 backdrop-blur"
+                  style={{border:`1px solid ${g.color}1e`,background:'rgba(12,17,32,0.85)'}}
+                  onMouseEnter={e=>{e.currentTarget.style.borderColor=`${g.color}45`;}}
+                  onMouseLeave={e=>{e.currentTarget.style.borderColor=`${g.color}1e`;}}>
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-xl">{g.icon}</span>
+                    <span className="font-mono text-[0.62rem] tracking-widest uppercase" style={{color:g.color}}>{g.cat}</span>
+                  </div>
+                  <div className="h-px mb-3" style={{background:`linear-gradient(to right,${g.color},transparent)`}}/>
+                  <div className="flex flex-wrap gap-1.5">
+                    {g.skills.map((sk,si) => (
+                      <span key={si} className="skill-pill font-body text-xs px-2.5 py-1 rounded-lg cursor-default"
+                        style={{background:`${g.color}0e`,border:`1px solid ${g.color}22`,color:si<3?'#E2E8F0':'#94A3B8'}}
+                        onMouseEnter={e=>{e.target.style.color=g.color;e.target.style.borderColor=`${g.color}55`;e.target.style.background=`${g.color}18`;}}
+                        onMouseLeave={e=>{e.target.style.color=si<3?'#E2E8F0':'#94A3B8';e.target.style.borderColor=`${g.color}22`;e.target.style.background=`${g.color}0e`;}}>
+                        {sk}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── CERTIFICATIONS ───────────────────────────────────────────────────────────
+
+function Certifications() {
+  const titleRef = useReveal();
+  return (
+    <section id="certs" className="py-24">
+      <div className="max-w-7xl mx-auto px-6">
+        <div ref={titleRef} className="reveal mb-12">
+          <p className="font-mono text-xs tracking-[0.2em] uppercase mb-3 flex items-center gap-3" style={{color:'#0078D4'}}><span className="w-8 h-px bg-[#0078D4]"/>Certifications</p>
+          <h2 className="font-display text-4xl md:text-5xl font-bold text-white">Credentials.</h2>
+        </div>
+        <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
+          {CERTS.map((c,i) => {
+            const ref = useReveal(i*80);
+            const inProg = c.status==='in-progress';
+            return (
+              <div key={i} ref={ref} className="reveal">
+                <div className="proj-card h-full rounded-2xl p-5 backdrop-blur"
+                  style={{border:`1px solid ${c.color}${inProg?'35':'22'}`,background:'rgba(12,17,32,0.85)'}}
+                  onMouseEnter={e=>{e.currentTarget.style.borderColor=`${c.color}55`;}}
+                  onMouseLeave={e=>{e.currentTarget.style.borderColor=`${c.color}${inProg?'35':'22'}`;}}>
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
+                      style={{background:`${c.color}18`,border:`1px solid ${c.color}35`}}>
+                      {c.icon}
+                    </div>
+                    <span className={`font-mono text-[0.56rem] tracking-widest px-2 py-0.5 rounded-full ${inProg?'':'opacity-80'}`}
+                      style={{color:c.color,border:`1px solid ${c.color}40`,background:`${c.color}0a`}}>
+                      {inProg?'IN PROGRESS':'COMPLETED'}
+                    </span>
+                  </div>
+                  <h3 className="font-body text-sm font-medium text-slate-200 leading-snug mb-3">{c.title}</h3>
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-[0.62rem] tracking-wider" style={{color:c.color}}>{c.issuer}</span>
+                    <span className="font-mono text-[0.6rem] text-slate-600">{c.year}</span>
+                  </div>
+                  {inProg && (
+                    <div className="mt-3">
+                      <div className="h-0.5 rounded-full overflow-hidden" style={{background:'rgba(255,255,255,0.06)'}}>
+                        <div className="h-full rounded-full w-[45%]" style={{background:`linear-gradient(to right,${c.color}80,${c.color})`}}/>
+                      </div>
+                      <div className="font-mono text-[0.54rem] text-slate-600 mt-1">In progress · 2026</div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── CONTACT ──────────────────────────────────────────────────────────────────
+
+function Contact() {
+  const ref = useReveal();
+  return (
+    <section id="contact" className="py-24" style={{background:'rgba(13,18,32,0.4)'}}>
+      <div className="max-w-7xl mx-auto px-6">
+        <div ref={ref} className="reveal max-w-xl mx-auto text-center">
+          <p className="font-mono text-xs tracking-[0.2em] uppercase mb-3 flex items-center justify-center gap-3" style={{color:'#0078D4'}}>
+            <span className="w-8 h-px bg-[#0078D4]"/>Contact<span className="w-8 h-px bg-[#0078D4]"/>
+          </p>
+          <h2 className="font-display text-4xl md:text-5xl font-bold text-white mb-4">Let's talk pipelines.</h2>
+          <p className="font-body text-slate-400 mb-10 leading-relaxed text-sm">
+            Open to Data Engineering roles — Azure pipelines, real-time streaming, greenfield data infrastructure. Targeting <span className="text-white font-medium">14 LPA</span>. Notice period 30 days (negotiable).
+          </p>
+          <a href="mailto:neerajguleria956@gmail.com"
+            className="group inline-flex items-center gap-3 px-8 py-4 rounded-xl mb-8 font-mono text-sm tracking-wider transition-all duration-300 hover:-translate-y-0.5"
+            style={{background:'#0078D4',color:'#fff'}}
+            onMouseEnter={e=>{e.currentTarget.style.background='#50B4FC';e.currentTarget.style.boxShadow='0 0 30px rgba(0,120,212,0.4)';}}
+            onMouseLeave={e=>{e.currentTarget.style.background='#0078D4';e.currentTarget.style.boxShadow='none';}}>
+            neerajguleria956@gmail.com
+            <span className="group-hover:translate-x-1 transition-transform inline-block">→</span>
+          </a>
+          <div className="flex flex-wrap justify-center gap-3 mb-10">
+            {[
+              {label:'GitHub',   href:'https://github.com/Neeraj600',                 color:'#CCCCCC'},
+              {label:'LinkedIn', href:'https://www.linkedin.com/in/neeraj-guleria',   color:'#50B4FC'},
+              {label:'Phone',    href:'tel:+916006207946',                            color:'#10B981'},
+            ].map(l=>(
+              <a key={l.label} href={l.href} target={l.href.startsWith('http')?'_blank':undefined} rel="noreferrer"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-mono text-xs tracking-wider transition-all duration-200 hover:-translate-y-0.5"
+                style={{border:`1px solid ${l.color}30`,color:l.color,background:`${l.color}08`}}
+                onMouseEnter={e=>{e.currentTarget.style.borderColor=`${l.color}60`;e.currentTarget.style.background=`${l.color}14`;}}
+                onMouseLeave={e=>{e.currentTarget.style.borderColor=`${l.color}30`;e.currentTarget.style.background=`${l.color}08`;}}>
+                {l.label} ↗
+              </a>
+            ))}
+          </div>
+          <div className="flex flex-wrap justify-center gap-6 font-mono text-xs text-slate-600">
+            {[
+              {dot:'#10B981',text:'New Delhi, India'},
+              {dot:'#0078D4',text:'30 days notice (negotiable)'},
+              {dot:'#F59E0B',text:'Targeting 14 LPA'},
+            ].map(item=>(
+              <span key={item.text} className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full" style={{background:item.dot,animation:'pulseGlow 2s ease-in-out infinite'}}/>
+                {item.text}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── FOOTER ───────────────────────────────────────────────────────────────────
+
+function Footer() {
+  return (
+    <footer className="py-8 px-6 text-center" style={{borderTop:'1px solid rgba(0,120,212,0.12)'}}>
+      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
+        <div className="font-mono text-xs text-slate-600 tracking-widest">
+          © 2026 · Neeraj Singh Guleria · Azure Data Engineer
+        </div>
+        <div className="font-mono text-xs" style={{color:'rgba(0,120,212,0.4)'}}>
+          neeraj<span style={{color:'rgba(245,158,11,0.5)'}}>.</span>
+          <span style={{color:'rgba(0,212,255,0.4)'}}>dev</span>
+        </div>
+        <div className="flex items-center gap-2 font-mono text-xs text-slate-700">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#10B981]" style={{animation:'pulseGlow 2s ease-in-out infinite'}}/>
+          Built with React + Tailwind
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+// ── APP ──────────────────────────────────────────────────────────────────────
+
+function App() {
+  return (
+    <>
+      <Cursor/>
+      <Navbar/>
+      <main>
+        <Hero/>
+        <About/>
+        <Experience/>
+        <PipelineViz/>
+        <DEProjects/>
+        <DAProjects/>
+        <Skills/>
+        <Certifications/>
+        <Contact/>
+      </main>
+      <Footer/>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
