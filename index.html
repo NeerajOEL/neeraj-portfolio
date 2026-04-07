@@ -310,7 +310,7 @@ const PIPELINE_DETAILS = {
 
 const STATS = [
   {num:'2+',   label:'Years Exp'},
-  {num:'1M+',  label:'Records/Mo'},
+  {num:'10M+',  label:'Records/Mo'},
   {num:'90%',  label:'Time Saved'},
   {num:'20+',  label:'ADF Pipelines'},
   {num:'100+', label:'Hrs Saved/Mo'},
@@ -322,7 +322,7 @@ const EXPERIENCE = [
     role:'Data Engineer', company:'Optiemus Electronics Ltd.', location:'Noida, India',
     period:'Mar 2024 – Present', color:'#0078D4',
     points:[
-      'Cut production analysis time by <b>90%</b> — automated 1M+ monthly logs through ADF → Databricks → Synapse pipeline.',
+      'Cut production analysis time by <b>90%</b> — automated 10M+ monthly logs through ADF → Databricks → Synapse pipeline.',
       'Built complete <b>Bronze → Silver → Gold medallion architecture</b> on ADLS Gen2 and Delta Lake from scratch.',
       'Introduced <b>dbt transformation models</b> with schema tests replacing untested ad-hoc SQL scripts.',
       'Implemented <b>Great Expectations</b> quality gates — broken data now caught before it reaches dashboards.',
@@ -351,7 +351,7 @@ const EXPERIENCE = [
 const DE_PROJECTS = [
   {
     title:'Azure Manufacturing Data Pipeline', type:'Production · Data Engineering', featured:true,
-    desc:'End-to-end ETL/ELT pipeline replacing manual log analysis for 1M+ monthly production records across SMT, Assembly, and Packaging lines.',
+    desc:'End-to-end ETL/ELT pipeline replacing manual log analysis for 10M+ monthly production records across SMT, Assembly, and Packaging lines.',
     impact:['90% reduction in analysis time','100+ engineering hours saved/month','4 live Power BI dashboards used daily'],
     pipeline:['MES/ERP','ADF','Databricks','Delta Lake','Power BI'],
     pColors:['#8B5CF6','#0078D4','#FF3621','#F59E0B','#10B981'],
@@ -665,7 +665,7 @@ function Hero() {
           </div>
           {/* Desc */}
           <p className="font-body text-base text-slate-400 leading-relaxed mb-8 max-w-xl anim-slide-4">
-            I build pipelines that process <span className="text-white font-medium">1M+ records a month</span> and don't break at 2am. Azure-first. Real production scale. Obsessed with <span style={{color:'#50B4FC'}}>data quality</span> and <span style={{color:'#10B981'}}>observability</span>.
+            I build pipelines that process <span className="text-white font-medium">10M+ records a month</span> and don't break at 2am. Azure-first. Real production scale. Obsessed with <span style={{color:'#50B4FC'}}>data quality</span> and <span style={{color:'#10B981'}}>observability</span>.
           </p>
           {/* Stats */}
           <div className="grid grid-cols-3 md:grid-cols-6 gap-2 mb-8 anim-slide-4">
@@ -856,7 +856,7 @@ const PIPELINE_EXTRA = {
   SOURCE:    { icon:'🗄️', record:'Raw source systems', badge:'INPUT',   metrics:[{k:'Systems',v:'MES, ERP, Oracle'},{k:'Format',v:'Structured + Semi-structured'},{k:'Frequency',v:'Hourly trigger'}] },
   INGEST:    { icon:'🔷', record:'Azure Data Factory', badge:'INGEST',  metrics:[{k:'Pipelines',v:'20+ ADF pipelines'},{k:'Pattern',v:'Watermark + Tumbling Window'},{k:'Retry',v:'3× with backoff'}] },
   BRONZE:    { icon:'📦', record:'Raw landing zone',   badge:'RAW',     metrics:[{k:'Storage',v:'ADLS Gen2'},{k:'Format',v:'Parquet / Delta'},{k:'Retention',v:'Full audit trail'}] },
-  TRANSFORM: { icon:'⚡', record:'Databricks cluster', badge:'COMPUTE', metrics:[{k:'Engine',v:'PySpark distributed'},{k:'Quality',v:'Great Expectations gates'},{k:'Scale',v:'1M+ records/month'}] },
+  TRANSFORM: { icon:'⚡', record:'Databricks cluster', badge:'COMPUTE', metrics:[{k:'Engine',v:'PySpark distributed'},{k:'Quality',v:'Great Expectations gates'},{k:'Scale',v:'10M+ records/month'}] },
   SILVER:    { icon:'🔄', record:'dbt models',         badge:'CLEAN',   metrics:[{k:'Models',v:'Staging → Intermediate'},{k:'Tests',v:'Schema + freshness checks'},{k:'Lineage',v:'Full column lineage'}] },
   GOLD:      { icon:'⭐', record:'Aggregated metrics',  badge:'SERVE',   metrics:[{k:'Tables',v:'5 fact + 12 dim'},{k:'Schema',v:'Star schema / SCD Type 2'},{k:'Optimised',v:'Z-ordering + compaction'}] },
   SERVE:     { icon:'📊', record:'End consumers',      badge:'OUTPUT',  metrics:[{k:'Dashboards',v:'4 live Power BI'},{k:'Users',v:'Production heads + mgmt'},{k:'Refresh',v:'Daily by 6am SLA'}] },
