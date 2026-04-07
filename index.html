@@ -4,8 +4,8 @@
 <!-- v2.1 pipeline-redesign -->
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Neeraj Singh Guleria — Azure Data Engineer</title>
-<meta name="description" content="Azure Data Engineer · PySpark · dbt · Databricks · Snowflake · Building pipelines that actually work in production."/>
+<title>Neeraj Singh Guleria — Data Engineer</title>
+<meta name="description" content="Data Engineer · PySpark · dbt · Databricks · Snowflake · Building pipelines that actually work in production."/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600;700;800&family=JetBrains+Mono:wght@300;400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
@@ -483,7 +483,7 @@ function ThemeToggle() {
 function DownloadBtn({ compact = false }) {
   return (
     <a
-      href="Neeraj_Singh_Guleria_Resume.pdf"
+      href="Neeraj_Singh_Guleria.pdf"
       download="Neeraj_Singh_Guleria_Resume.pdf"
       className="dl-btn"
       title="Download Resume PDF"
@@ -926,7 +926,7 @@ function PipelineViz() {
           {/* Subtitle + status pill */}
           <div className="flex items-center gap-3 mb-10 flex-wrap">
             <p className="font-body text-sm" style={{color:textSecondary}}>
-              Hover to preview · Click to lock · Auto-advances every 15s
+              Hover to preview · Click to lock 
             </p>
             {locked ? (
               <span className="font-mono text-[0.58rem] tracking-widest px-2.5 py-1 rounded-full"
@@ -1460,7 +1460,7 @@ function Contact() {
           </p>
           <h2 className="font-display text-4xl md:text-5xl font-bold text-white mb-4">Let's talk pipelines.</h2>
           <p className="font-body text-slate-400 mb-10 leading-relaxed text-sm">
-            Open to Data Engineering roles — Azure pipelines, real-time streaming, greenfield data infrastructure. Targeting <span className="text-white font-medium">14 LPA</span>. Notice period 30 days (negotiable).
+            Open to Data Engineering roles — Azure pipelines, real-time streaming, greenfield data infrastructure..
           </p>
           <a href="mailto:neerajguleria956@gmail.com"
             className="group inline-flex items-center gap-3 px-8 py-4 rounded-xl mb-8 font-mono text-sm tracking-wider transition-all duration-300 hover:-translate-y-0.5"
@@ -1487,9 +1487,7 @@ function Contact() {
           </div>
           <div className="flex flex-wrap justify-center gap-6 font-mono text-xs text-slate-600">
             {[
-              {dot:'#10B981',text:'New Delhi, India'},
-              {dot:'#0078D4',text:'30 days notice (negotiable)'},
-              {dot:'#F59E0B',text:'Targeting 14 LPA'},
+              {dot:'#10B981',text:'New Delhi, India'}
             ].map(item=>(
               <span key={item.text} className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full" style={{background:item.dot,animation:'pulseGlow 2s ease-in-out infinite'}}/>
@@ -1510,16 +1508,13 @@ function Footer() {
     <footer className="py-8 px-6 text-center" style={{borderTop:'1px solid rgba(0,120,212,0.12)'}}>
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
         <div className="font-mono text-xs text-slate-600 tracking-widest">
-          © 2026 · Neeraj Singh Guleria · Azure Data Engineer
+          © 2026 · Neeraj Singh Guleria · Data Engineer
         </div>
         <div className="font-mono text-xs" style={{color:'rgba(0,120,212,0.4)'}}>
           neeraj<span style={{color:'rgba(245,158,11,0.5)'}}>.</span>
           <span style={{color:'rgba(0,212,255,0.4)'}}>dev</span>
         </div>
-        <div className="flex items-center gap-2 font-mono text-xs text-slate-700">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#10B981]" style={{animation:'pulseGlow 2s ease-in-out infinite'}}/>
-          Built with React + Tailwind
-        </div>
+        
       </div>
     </footer>
   );
@@ -1539,7 +1534,7 @@ function FloatingDownload() {
 
   return (
     <a
-      href="Neeraj_Singh_Guleria_Resume.pdf"
+      href="Neeraj_Singh_Guleria.pdf"
       download="Neeraj_Singh_Guleria_Resume.pdf"
       title="Download Resume PDF"
       className="dl-btn"
